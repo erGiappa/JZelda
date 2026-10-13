@@ -1,0 +1,14 @@
+# File compilati Java
+bin/
+*.class
+
+# File temporanei
+*.log
+.DS_Store
+
+# File personali degli IDE
+.idea/
+.vscode/
+
+# Output di build Maven, se introdotto in futuro
+target/
