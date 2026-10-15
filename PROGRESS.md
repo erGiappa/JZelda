@@ -47,13 +47,8 @@ Il codice è stato organizzato nelle directory model e view, con la classe princ
 Questa organizzazione costituisce una prima separazione tra dati del giocatore e presentazione grafica. L'architettura MVC dovrà essere completata e verificata con l'introduzione delle ulteriori responsabilità necessarie.
 
 Stato del repository
-Branch corrente: main.
-Ultimo commit verificato prima delle modifiche locali: b90ca44 (chore: initialize JZelda project).
-Repository remoto configurato come origin.
-Modifiche locali presenti in JZelda.java.
-Nuove classi presenti nelle directory model e view, non ancora tracciate da Git.
-Aggiornamento di questo registro e del README previsto per il checkpoint corrente.
-Commit e push delle modifiche correnti ancora da completare.
+
+Branch corrente: main. Ultimo commit verificato: abd51a8 (feat: add player model and initial game interface). Repository remoto configurato come origin. Il branch locale main risulta allineato con origin/main, secondo la verifica eseguita tramite git status -sb. Al momento della verifica, Git non segnalava modifiche locali pendenti. Il commit corrente contiene il modello del giocatore e la prima interfaccia grafica Swing. Il movimento tramite tastiera e le successive meccaniche di gioco devono ancora essere implementati e verificati.
 Funzionalità non ancora implementate o da verificare
 Movimento del personaggio tramite tastiera.
 Aggiornamento e ridisegno automatico della scena durante il gioco.
@@ -64,12 +59,13 @@ Gestione completa delle regole di gioco.
 Test automatizzati e configurazione di un framework di test.
 Completamento dell'architettura MVC.
 Prossime attività
-Aggiornare e verificare la documentazione.
-Controllare le modifiche e i file da includere nel commit.
-Creare un commit descrittivo per il modello del giocatore e la prima interfaccia grafica.
-Eseguire il push su GitHub e verificare l'allineamento con origin/main.
-Implementare il movimento del personaggio tramite tastiera.
-Proseguire con la mappa e le prime meccaniche di gioco.
+
+    Verificare e consolidare la documentazione del progetto.
+    Analizzare il codice attuale prima di introdurre nuove modifiche.
+    Implementare il movimento del giocatore tramite tastiera.
+    Verificare il movimento e il ridisegno della scena.
+    Proseguire con la mappa e le prime meccaniche di gioco.
+    Aggiornare questo registro al termine di ogni checkpoint, riportando modifiche effettive, verifiche eseguite, eventuali problemi e prossime attività.
 Regola di aggiornamento
 
 Aggiornare questo file al termine di ogni checkpoint, indicando le funzionalità effettivamente completate, i controlli eseguiti, gli eventuali problemi e le prossime attività. Distinguere sempre le funzionalità implementate da quelle soltanto pianificate.
