@@ -100,15 +100,22 @@ Questa organizzazione costituisce una prima separazione tra dati e presentazione
 L'architettura MVC non è ancora completa: la separazione delle responsabilità e l'eventuale introduzione di un controller dedicato dovranno essere valutate e verificate durante lo sviluppo.
 
 5. Stato del repository Git
-Branch corrente: main.
-Ultimo commit verificato: c4a25a9 — docs: update project progress checkpoint.
+
+Branch di lavoro: main.
+
+Ultimo commit verificato dall'utente: a56aafd — feat: add keyboard movement to player.
+
 Repository remoto: origin.
-Ultimo stato Git verificato: branch locale main allineato con origin/main.
-Modifiche locali pendenti: nessuna al momento dell'ultima verifica effettuata prima dell'implementazione del movimento.
 
-Il commit c4a25a9 è stato pubblicato su GitHub. Le modifiche al movimento tramite tastiera sono state successivamente implementate e verificate in Eclipse, ma il loro stato Git deve ancora essere controllato.
+Stato Git riportato dall'utente:
 
-Non è quindi ancora confermato se le modifiche più recenti siano state registrate in un commit o pubblicate su GitHub.
+    Branch locale main allineato con origin/main.
+    Nessuna modifica locale rilevata da git diff --stat.
+    Nessun file nuovo non tracciato rilevato da git ls-files --others --exclude-standard.
+
+Il movimento tramite tastiera è stato verificato manualmente dall'utente in Eclipse. Le verifiche hanno avuto esito positivo.
+
+Ultima verifica Git eseguita dall'utente: dopo il commit a56aafd. Lo stato dovrà essere ricontrollato dopo le prossime modifiche.
 
 6. Funzionalità non ancora implementate o da verificare
 Limiti dell'area di gioco.
@@ -121,14 +128,13 @@ Gestione completa delle regole di gioco.
 Test automatizzati e configurazione di un framework di test.
 Completamento e verifica dell'architettura MVC.
 7. Prossime attività
-Verificare lo stato Git dopo l'implementazione del movimento tramite tastiera.
-Controllare le modifiche a GamePanel.java e PROGRESS.md.
-Registrare il checkpoint corrente e aggiornare la documentazione.
-Analizzare come impedire al personaggio di uscire dall'area di gioco.
-Implementare e verificare i limiti di movimento con una modifica alla volta.
-Proseguire successivamente con la mappa e le prime meccaniche di gioco.
 
-Il prossimo intervento sul codice non deve iniziare prima di aver verificato lo stato Git e confermato il punto di ripartenza.
+    Analizzare l'implementazione attuale di GamePanel.java e individuare come vengono gestite le coordinate del giocatore e le dimensioni dell'area di gioco.
+    Progettare una modifica circoscritta per impedire al personaggio di oltrepassare i bordi dell'area visibile.
+    Implementare i limiti senza alterare il comportamento del movimento già verificato.
+    Verificare manualmente tutti e quattro i bordi, il movimento verso l'interno e la persistenza delle statistiche.
+    Aggiornare questo registro con le modifiche effettive, le verifiche eseguite, gli eventuali problemi e lo stato Git.
+    Proseguire con il prossimo obiettivo soltanto dopo aver verificato il checkpoint.
 
 8. Regola di aggiornamento del registro
 
@@ -143,3 +149,36 @@ Prossima attività concreta.
 Distinguere sempre le funzionalità implementate e verificate da quelle soltanto pianificate o ancora da verificare.
 
 Il registro deve descrivere lo stato reale del progetto, senza considerare completata una funzionalità prima di averne verificato il comportamento.
+
+Checkpoint — Limiti del movimento del giocatore
+Modifiche effettuate
+
+File modificato: src/it/zelda/view/GamePanel.java.
+
+Introdotto il metodo movePlayer(int deltaX, int deltaY) per controllare la posizione successiva del giocatore.
+Calcolati i limiti del movimento usando le dimensioni effettive di GamePanel e la dimensione del personaggio (32 × 32 pixel).
+Impedito alle coordinate di superare i limiti dell'area di gioco.
+Gestiti gli spostamenti parziali necessari per raggiungere esattamente i bordi.
+Aggiornate le azioni della tastiera per utilizzare movePlayer(...) prima di richiedere il ridisegno con repaint().
+Lasciati invariati Player.java, GameFrame.java e il sistema di statistiche.
+Verifiche eseguite
+
+Verifica manuale eseguita dall'utente in Eclipse: esito positivo.
+
+Avvio del progetto senza errori segnalati.
+Movimento nelle quattro direzioni.
+Arresto del movimento ai bordi dell'area di gioco.
+Possibilità di tornare verso l'interno dopo aver raggiunto un bordo.
+Persistenza delle statistiche e corretto aggiornamento grafico.
+
+Nota: i risultati derivano dalla verifica manuale dell'utente; non sono stati eseguiti test automatici documentati in questo checkpoint.
+
+Stato Git
+
+Commit precedente: a56aafd — feat: add keyboard movement to player.
+
+Il codice di GamePanel.java è stato modificato dopo questo commit. Stato Git successivo alla modifica: da verificare.
+
+Prossimo passo
+
+Controllare le modifiche con Git, aggiornare il registro e individuare il prossimo obiettivo in base al codice e alle attività ancora da completare.

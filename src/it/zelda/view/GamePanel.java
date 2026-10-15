@@ -40,8 +40,24 @@ public class GamePanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                player.move(deltaX, deltaY);
+                movePlayer(deltaX, deltaY);
                 repaint();
+            }
+            private void movePlayer(int deltaX, int deltaY) {
+                int playerSize = 32;
+
+                int maxX = Math.max(0, getWidth() - playerSize);
+                int maxY = Math.max(0, getHeight() - playerSize);
+
+                int nextX = Math.max(0,
+                        Math.min(player.getX() + deltaX, maxX));
+
+                int nextY = Math.max(0,
+                        Math.min(player.getY() + deltaY, maxY));
+
+                player.move(
+                        nextX - player.getX(),
+                        nextY - player.getY());
             }
         });
     }
