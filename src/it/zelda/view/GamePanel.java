@@ -1,3 +1,4 @@
+
 package it.zelda.view;
 
 import java.awt.Color;
@@ -12,54 +13,105 @@ import javax.swing.KeyStroke;
 
 import it.zelda.model.Player;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.swing.Timer;
+
 public class GamePanel extends JPanel {
 
     private final Player player;
+    // Direzioni attualmente premute.
+    private final Set<String> pressedDirections = new HashSet<>();
+
+    // Timer che aggiorna il movimento ogni 50 millisecondi.
+    private final Timer movementTimer;
 
     public GamePanel(Player player) {
         this.player = player;
         setBackground(Color.BLACK);
 
+        // Timer che aggiorna il movimento ogni 50 millisecondi.
+        movementTimer = new Timer(50, e -> updateMovement());
+        movementTimer.start();
+
         // Associa le frecce alle azioni di movimento.
-        bindMovementKey("UP", "moveUp", 0, -10);
-        bindMovementKey("DOWN", "moveDown", 0, 10);
-        bindMovementKey("LEFT", "moveLeft", -10, 0);
-        bindMovementKey("RIGHT", "moveRight", 10, 0);
+        bindMovementKey("UP", "moveUp");
+        bindMovementKey("DOWN", "moveDown");
+        bindMovementKey("LEFT", "moveLeft");
+        bindMovementKey("RIGHT", "moveRight");
     }
 
     private void bindMovementKey(
             String keyStroke,
-            String actionKey,
-            int deltaX,
-            int deltaY) {
+            String actionKey) {
 
-        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(keyStroke), actionKey);
+    String direction = actionKey.substring(4).toUpperCase();
 
-        getActionMap().put(actionKey, new AbstractAction() {
+    // Registra la pressione del tasto.
+    getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke("pressed " + keyStroke), actionKey);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                movePlayer(deltaX, deltaY);
-                repaint();
-            }
-            private void movePlayer(int deltaX, int deltaY) {
-                int playerSize = 32;
+    getActionMap().put(actionKey, new AbstractAction() {
 
-                int maxX = Math.max(0, getWidth() - playerSize);
-                int maxY = Math.max(0, getHeight() - playerSize);
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            pressedDirections.add(direction);
+        }
+    });
 
-                int nextX = Math.max(0,
-                        Math.min(player.getX() + deltaX, maxX));
+    // Registra il rilascio del tasto.
+    String releaseKey = actionKey + "Released";
 
-                int nextY = Math.max(0,
-                        Math.min(player.getY() + deltaY, maxY));
+    getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke("released " + keyStroke), releaseKey);
 
-                player.move(
-                        nextX - player.getX(),
-                        nextY - player.getY());
-            }
-        });
+    getActionMap().put(releaseKey, new AbstractAction() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            pressedDirections.remove(direction);
+        }
+    });
+}
+
+    private void updateMovement() {
+        if (pressedDirections.contains("UP")) {
+            movePlayer(0, -10);
+        }
+
+        if (pressedDirections.contains("DOWN")) {
+            movePlayer(0, 10);
+        }
+
+        if (pressedDirections.contains("LEFT")) {
+            movePlayer(-10, 0);
+        }
+
+        if (pressedDirections.contains("RIGHT")) {
+            movePlayer(10, 0);
+        }
+
+        if (!pressedDirections.isEmpty()) {
+            repaint();
+        }
+    }
+
+    private void movePlayer(int deltaX, int deltaY) {
+        int playerSize = 32;
+
+        int maxX = Math.max(0, getWidth() - playerSize);
+        int maxY = Math.max(0, getHeight() - playerSize);
+
+        int nextX = Math.max(0,
+                Math.min(player.getX() + deltaX, maxX));
+
+        int nextY = Math.max(0,
+                Math.min(player.getY() + deltaY, maxY));
+
+        player.move(
+                nextX - player.getX(),
+                nextY - player.getY());
     }
 
     @Override

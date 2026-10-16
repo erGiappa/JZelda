@@ -3,182 +3,294 @@ JZelda — Registro dei progressi
 
 Fase: 1 — Struttura iniziale del gioco e prototipo grafico Swing.
 
-Il progetto consiste nello sviluppo di un prototipo ispirato a Zelda, realizzato in Java. In questa fase si stanno costruendo le basi del gioco: modello del giocatore, interfaccia grafica, gestione degli input e organizzazione del codice.
-
+JZelda è un progetto universitario sviluppato in Java, ispirato alla serie Zelda. In questa fase si stanno costruendo le basi del gioco: modello del giocatore, interfaccia grafica, gestione degli input e organizzazione del codice.
 Ambiente di sviluppo
-Sistema operativo: macOS, Apple Silicon.
-IDE: Eclipse.
-JDK: Eclipse Temurin 21.0.12.1.
-Linguaggio: Java 21.
-Libreria grafica: Java Swing.
-Repository GitHub: https://github.com/erGiappa/JZelda
-Branch di lavoro: main.
-Classe principale: it.zelda.JZelda.
-2. Funzionalità implementate
+
+    Sistema operativo: macOS, Apple Silicon.
+    IDE: Eclipse.
+    JDK: Eclipse Temurin 21.0.12.1.
+    Linguaggio: Java 21.
+    Libreria grafica: Java Swing.
+    Repository GitHub: https://github.com/erGiappa/JZelda
+    Branch di lavoro: main.
+    Classe principale: it.zelda.JZelda.
+
+2. Struttura del progetto e funzionalità implementate
 2.1 Configurazione del progetto
-Creazione del progetto Java in Eclipse.
-Configurazione dell'ambiente Java 21.
-Inizializzazione del repository Git locale.
-Configurazione del repository remoto GitHub.
-Verifica iniziale dell'apertura della finestra Swing.
+
+    Progetto Java configurato in Eclipse.
+    Ambiente Java 21 configurato.
+    Repository Git locale e repository remoto GitHub configurati.
+    Finestra Swing iniziale implementata.
+
 2.2 Modello del giocatore
 
-È stata creata la classe it.zelda.model.Player, responsabile della gestione dei dati principali del giocatore.
+La classe it.zelda.model.Player gestisce i dati principali del giocatore:
 
-Il modello gestisce:
+    Coordinate x e y.
+    Vite iniziali: 3.
+    Rupie iniziali: 0.
+    Punteggio iniziale: 0.
+    Movimento tramite move(int deltaX, int deltaY).
+    Perdita di una vita, senza scendere sotto zero.
+    Incremento di rupie e punteggio tramite valori positivi.
 
-Posizione del personaggio tramite le coordinate x e y.
-Numero iniziale di vite pari a 3.
-Numero iniziale di rupie pari a 0.
-Punteggio iniziale pari a 0.
-Aggiornamento delle coordinate tramite il metodo move(int deltaX, int deltaY).
-Perdita di una vita, senza scendere sotto zero.
-Incremento di rupie e punteggio tramite valori positivi.
-
-È inoltre presente la classe PlayerTest, utilizzabile per verificare manualmente il comportamento del modello tramite output sul terminale.
-
+È presente anche PlayerTest, utilizzabile per verifiche manuali del modello tramite output sul terminale.
 2.3 Interfaccia grafica
 
-Sono state create le seguenti classi:
+Sono presenti le seguenti classi:
 
-it.zelda.view.GameFrame — finestra principale del gioco, con dimensioni di 800 × 600 pixel.
-it.zelda.view.GamePanel — pannello grafico con sfondo nero, personaggio rappresentato da un rettangolo verde e visualizzazione di vite, rupie e punteggio.
-it.zelda.JZelda — classe principale che inizializza il modello del giocatore e apre la finestra Swing sul thread dedicato all'interfaccia grafica.
+    it.zelda.JZelda: inizializza il modello del giocatore e avvia la finestra Swing sul thread dell'interfaccia grafica.
+    it.zelda.view.GameFrame: finestra principale del gioco, configurata con dimensioni esterne di 800 × 600 pixel e non ridimensionabile.
+    it.zelda.view.GamePanel: pannello con sfondo nero, giocatore rappresentato da un rettangolo verde di 32 × 32 pixel e visualizzazione delle statistiche.
+
+Le statistiche visualizzate sono vite, rupie e punteggio.
 2.4 Movimento tramite tastiera
 
-È stato implementato il movimento del giocatore tramite i quattro tasti freccia, intervenendo sulla classe GamePanel.
+In GamePanel è stato implementato il movimento tramite i quattro tasti freccia.
 
 La gestione degli input utilizza le key bindings di Swing:
 
-InputMap associa i tasti alle rispettive azioni.
-ActionMap definisce le azioni da eseguire.
-JComponent.WHEN_IN_FOCUSED_WINDOW permette di attivare i comandi quando la finestra del gioco è attiva.
-Ogni pressione di una freccia sposta il personaggio di 10 pixel nella direzione corrispondente.
-Il metodo player.move(...) aggiorna le coordinate del modello.
-Il metodo repaint() richiede il ridisegno del pannello.
+    InputMap associa i tasti alle rispettive azioni.
+    ActionMap definisce il comportamento delle azioni.
+    JComponent.WHEN_IN_FOCUSED_WINDOW permette di ricevere i comandi quando la finestra del gioco è attiva.
 
-Il metodo paintComponent(Graphics g) continua a disegnare il personaggio e le statistiche della partita.
+Il movimento iniziale utilizzava uno spostamento di 10 pixel per ogni attivazione di una freccia.
 
+Il metodo player.move(...) aggiorna le coordinate del modello, mentre repaint() richiede il ridisegno del pannello.
+2.5 Limiti dell'area di gioco
+
+È stato implementato il controllo dei limiti del movimento in it.zelda.view.GamePanel.
+
+Il metodo movePlayer(int deltaX, int deltaY):
+
+    Calcola le coordinate successive del giocatore.
+    Usa le dimensioni effettive del pannello.
+    Tiene conto delle dimensioni del personaggio, pari a 32 × 32 pixel.
+    Impedisce alle coordinate di diventare negative o di superare i limiti consentiti.
+    Permette di raggiungere esattamente un bordo anche quando lo spostamento richiesto di 10 pixel lo oltrepasserebbe.
+    Aggiorna il modello riutilizzando player.move(...).
+
+Le azioni associate alle frecce utilizzano il metodo di movimento, mantenendo attivo il controllo dei confini.
+
+Il controllo dei limiti è stato verificato manualmente dall'utente in Eclipse.
+2.6 Movimento continuo del personaggio
+
+Il movimento continuo è stato implementato in it.zelda.view.GamePanel utilizzando javax.swing.Timer e le key bindings di Swing.
+
+Il timer viene inizializzato con un intervallo di 50 millisecondi e richiama periodicamente il metodo updateMovement().
+
+La classe mantiene un insieme di direzioni attive, pressedDirections, dichiarato come Set<String> e inizializzato con HashSet.
+
+La gestione dei tasti funziona nel seguente modo:
+
+    Alla pressione di una freccia, la direzione corrispondente viene aggiunta a pressedDirections.
+    Al rilascio della freccia, la direzione viene rimossa dall'insieme.
+    Durante ogni aggiornamento del timer, updateMovement() controlla le direzioni attive.
+    Per ogni direzione attiva viene richiamato movePlayer(...).
+    Se è attivo almeno un movimento, viene richiesto il ridisegno tramite repaint().
+
+Lo spostamento è di 10 pixel per aggiornamento su ciascun asse attivo. La pressione contemporanea di due frecce permette il movimento diagonale.
+
+Il metodo movePlayer(...) conserva il controllo dei limiti dell'area di gioco. Il movimento continuo riutilizza quindi la logica dei confini già implementata, senza introdurre un secondo sistema di controllo delle coordinate.
+
+L'intervallo di 50 millisecondi corrisponde a una frequenza teorica di 20 aggiornamenti al secondo. La frequenza effettiva può variare in base al funzionamento del timer Swing e al carico del sistema.
+
+Verifiche manuali eseguite in Eclipse:
+
+    Movimento continuo mantenendo premute le frecce.
+    Arresto del movimento al rilascio dei tasti.
+    Movimento verso l'alto, il basso, destra e sinistra.
+    Arresto del personaggio ai quattro bordi dell'area di gioco.
+    Possibilità di tornare verso l'interno dopo aver raggiunto un bordo.
+    Persistenza della visualizzazione delle statistiche.
+
+L'utente ha confermato che tutte le prove hanno avuto esito positivo.
+
+Le verifiche descritte sono manuali. Non sono ancora documentati test automatici specifici per il movimento continuo.
 3. Verifiche eseguite
-3.1 Modello e interfaccia iniziale
-Verifica iniziale della finestra Swing.
-Presenza del modello del giocatore e delle statistiche.
-Presenza della struttura iniziale dei package model e view.
-3.2 Movimento del giocatore
+3.1 Avvio e interfaccia
 
-Il movimento tramite tastiera è stato verificato manualmente avviando l'applicazione da Eclipse.
+È stata verificata manualmente l'apertura dell'applicazione da Eclipse.
 
-Controlli superati:
+Il pannello visualizza il personaggio e le statistiche della partita.
+3.2 Movimento e limiti
 
-Avvio dell'applicazione senza errori.
-Movimento verso destra.
-Movimento verso sinistra.
-Movimento verso l'alto.
-Movimento verso il basso.
-Aggiornamento visivo della posizione del personaggio.
-Persistenza della visualizzazione di vite, rupie e punteggio.
-Assenza di errori nella Console di Eclipse durante le prove.
+L'utente ha confermato l'esito positivo delle verifiche manuali in Eclipse.
 
-Il movimento tramite tastiera è quindi considerato implementato e verificato nel prototipo attuale.
+Sono stati verificati:
 
-Limiti ancora presenti:
+    Movimento nelle quattro direzioni.
+    Aggiornamento visivo della posizione del personaggio.
+    Arresto del movimento ai bordi dell'area di gioco.
+    Possibilità di tornare verso l'interno dopo aver raggiunto un bordo.
+    Persistenza delle statistiche e corretto aggiornamento grafico.
 
-Il personaggio può uscire dall'area visibile.
-Non sono ancora presenti collisioni.
-Il movimento avviene a scatti di 10 pixel per pressione del tasto.
-Non è stato implementato il movimento continuo.
+3.3 Movimento continuo
+
+L'utente ha confermato che il movimento continuo funziona correttamente in Eclipse.
+
+Sono stati verificati:
+
+    Movimento ripetuto mentre una freccia rimane premuta.
+    Arresto del movimento al rilascio del tasto.
+    Funzionamento delle quattro direzioni.
+    Rispetto dei limiti durante il movimento continuo.
+    Possibilità di invertire la direzione dopo aver raggiunto un bordo.
+    Persistenza della visualizzazione delle statistiche.
+
+3.4 Controlli Git
+
+Durante il checkpoint è stato eseguito git diff --check, senza segnalazioni.
+
+Il controllo verifica la presenza di problemi di whitespace nel diff, ma non sostituisce la compilazione Java né le prove funzionali.
+
+L'utente ha inoltre verificato manualmente il funzionamento dell'applicazione in Eclipse.
+
+Non sono documentati test automatici per il movimento, i confini o il movimento continuo.
 4. Organizzazione del codice e architettura
 
-Il codice è stato organizzato nei seguenti package:
+Il codice è organizzato nei seguenti package:
 
-it.zelda — classe principale.
-it.zelda.model — modello e dati del giocatore.
-it.zelda.view — finestra e pannello grafico.
+    it.zelda: classe principale.
+    it.zelda.model: modello e dati del giocatore.
+    it.zelda.view: finestra e pannello grafico.
 
-Questa organizzazione costituisce una prima separazione tra dati e presentazione grafica.
+Questa organizzazione costituisce una prima separazione tra dati e presentazione.
 
-L'architettura MVC non è ancora completa: la separazione delle responsabilità e l'eventuale introduzione di un controller dedicato dovranno essere valutate e verificate durante lo sviluppo.
+L'architettura MVC non è ancora completa. L'eventuale introduzione di un controller dedicato e un'ulteriore separazione delle responsabilità dovranno essere valutate durante lo sviluppo.
 
-5. Stato del repository Git
+La gestione del movimento e degli input è attualmente concentrata in GamePanel. Un'eventuale riorganizzazione potrà essere valutata quando le funzionalità di gioco diventeranno più articolate.
+5. Funzionalità non ancora implementate o da verificare
 
-Branch di lavoro: main.
+Le seguenti funzionalità non devono essere considerate implementate senza averne verificato il codice e il comportamento:
 
-Ultimo commit verificato dall'utente: a56aafd — feat: add keyboard movement to player.
+    Collisioni con muri, ostacoli e nemici.
+    Mappa di gioco e gestione delle aree.
+    Nemici e combattimento.
+    Oggetti e interazioni.
+    Gestione completa delle regole di gioco.
+    Test automatizzati e configurazione di un framework di test.
+    Completamento e verifica dell'architettura MVC.
 
-Repository remoto: origin.
+Il movimento a scatti, i limiti dell'area di gioco e il movimento continuo sono invece implementati e verificati manualmente nel prototipo attuale.
+6. Stato del repository Git
 
-Stato Git riportato dall'utente:
+    Branch di lavoro: main.
+    Repository remoto: origin.
+    Ultimo commit pubblicato noto: 87daa44 — feat: constrain player movement to game area.
+    Commit precedente: a56aafd — feat: add keyboard movement to player.
 
-    Branch locale main allineato con origin/main.
-    Nessuna modifica locale rilevata da git diff --stat.
-    Nessun file nuovo non tracciato rilevato da git ls-files --others --exclude-standard.
+Il commit 87daa44 comprende le modifiche ai limiti del movimento ed è stato pubblicato su GitHub.
 
-Il movimento tramite tastiera è stato verificato manualmente dall'utente in Eclipse. Le verifiche hanno avuto esito positivo.
+Durante il checkpoint del movimento continuo sono state apportate modifiche locali a:
 
-Ultima verifica Git eseguita dall'utente: dopo il commit a56aafd. Lo stato dovrà essere ricontrollato dopo le prossime modifiche.
+    src/it/zelda/view/GamePanel.java
+    PROGRESS.md
 
-6. Funzionalità non ancora implementate o da verificare
-Limiti dell'area di gioco.
-Movimento continuo del personaggio.
-Aggiornamento automatico della scena durante il movimento continuo.
-Collisioni con muri, ostacoli e nemici.
-Mappa di gioco e gestione delle aree.
-Nemici, combattimento, oggetti e interazioni.
-Gestione completa delle regole di gioco.
-Test automatizzati e configurazione di un framework di test.
-Completamento e verifica dell'architettura MVC.
+Il movimento continuo è stato verificato manualmente in Eclipse.
+
+L'ultimo stato Git riportato dall'utente indica che entrambi i file sono modificati localmente sul branch main.
+
+È stato eseguito git diff --check senza segnalazioni.
+
+Il nuovo checkpoint del movimento continuo non è ancora registrato in un nuovo commit né risulta pubblicato su GitHub. Il commit e il push dovranno essere effettuati dopo aver salvato e verificato il presente aggiornamento del registro.
+
+Lo stato del repository dovrà essere riconfermato al momento della registrazione del checkpoint.
 7. Prossime attività
 
-    Analizzare l'implementazione attuale di GamePanel.java e individuare come vengono gestite le coordinate del giocatore e le dimensioni dell'area di gioco.
-    Progettare una modifica circoscritta per impedire al personaggio di oltrepassare i bordi dell'area visibile.
-    Implementare i limiti senza alterare il comportamento del movimento già verificato.
-    Verificare manualmente tutti e quattro i bordi, il movimento verso l'interno e la persistenza delle statistiche.
-    Aggiornare questo registro con le modifiche effettive, le verifiche eseguite, gli eventuali problemi e lo stato Git.
-    Proseguire con il prossimo obiettivo soltanto dopo aver verificato il checkpoint.
+Il movimento continuo del personaggio è stato implementato e verificato manualmente in Eclipse.
 
+Il prossimo obiettivo proposto è introdurre una prima gestione delle collisioni con muri e ostacoli.
+
+Prima di iniziare:
+
+    Esaminare il codice esistente e la struttura dei package.
+    Verificare se esistono già componenti utili alla rappresentazione della mappa.
+    Individuare una soluzione circoscritta, coerente con l'architettura attuale.
+    Concordare una sola modifica alla volta.
+    Implementare la modifica senza compromettere il movimento e i limiti già esistenti.
+    Verificare il comportamento in Eclipse.
+    Aggiornare questo registro al termine del checkpoint.
+
+Le collisioni e la mappa di gioco sono un obiettivo pianificato, non funzionalità già implementate.
 8. Regola di aggiornamento del registro
 
-Aggiornare questo file al termine di ogni checkpoint, riportando:
+Al termine di ogni checkpoint, aggiornare questo documento riportando:
 
-Modifiche effettivamente realizzate.
-Verifiche e test eseguiti, con i relativi risultati.
-Problemi incontrati e soluzioni adottate.
-Stato del repository Git, incluso il branch, il commit e le modifiche locali.
-Prossima attività concreta.
+    Modifiche effettivamente realizzate.
+    File modificati.
+    Verifiche e test eseguiti, con i relativi risultati.
+    Problemi incontrati e soluzioni adottate.
+    Stato del repository Git, branch, commit e modifiche locali.
+    Prossima attività concreta.
 
 Distinguere sempre le funzionalità implementate e verificate da quelle soltanto pianificate o ancora da verificare.
 
-Il registro deve descrivere lo stato reale del progetto, senza considerare completata una funzionalità prima di averne verificato il comportamento.
-
-Checkpoint — Limiti del movimento del giocatore
+Il registro deve descrivere lo stato reale del progetto e non deve considerare completata una funzionalità prima di averne verificato il comportamento.
+9. Ultimo checkpoint completato — Limiti del movimento
 Modifiche effettuate
 
-File modificato: src/it/zelda/view/GamePanel.java.
+File funzionale modificato: src/it/zelda/view/GamePanel.java.
 
-Introdotto il metodo movePlayer(int deltaX, int deltaY) per controllare la posizione successiva del giocatore.
-Calcolati i limiti del movimento usando le dimensioni effettive di GamePanel e la dimensione del personaggio (32 × 32 pixel).
-Impedito alle coordinate di superare i limiti dell'area di gioco.
-Gestiti gli spostamenti parziali necessari per raggiungere esattamente i bordi.
-Aggiornate le azioni della tastiera per utilizzare movePlayer(...) prima di richiedere il ridisegno con repaint().
-Lasciati invariati Player.java, GameFrame.java e il sistema di statistiche.
+    Aggiunto movePlayer(int deltaX, int deltaY).
+    Calcolati i limiti usando le dimensioni effettive del pannello e la dimensione del personaggio.
+    Impedita l'uscita del personaggio dall'area di gioco.
+    Mantenuto il movimento tramite le quattro frecce.
+    Conservata la visualizzazione delle statistiche.
+
 Verifiche eseguite
 
-Verifica manuale eseguita dall'utente in Eclipse: esito positivo.
+L'utente ha confermato che il movimento e i limiti funzionano correttamente in Eclipse.
 
-Avvio del progetto senza errori segnalati.
-Movimento nelle quattro direzioni.
-Arresto del movimento ai bordi dell'area di gioco.
-Possibilità di tornare verso l'interno dopo aver raggiunto un bordo.
-Persistenza delle statistiche e corretto aggiornamento grafico.
+Il controllo git diff --check è stato eseguito senza segnalazioni prima della creazione del commit.
+Stato del checkpoint
 
-Nota: i risultati derivano dalla verifica manuale dell'utente; non sono stati eseguiti test automatici documentati in questo checkpoint.
+Commit creato:
 
-Stato Git
+87daa44 — feat: constrain player movement to game area
 
-Commit precedente: a56aafd — feat: add keyboard movement to player.
+L'utente ha successivamente eseguito il push del commit su GitHub.
+10. Ultimo checkpoint funzionale — Movimento continuo
+Modifiche effettuate
 
-Il codice di GamePanel.java è stato modificato dopo questo commit. Stato Git successivo alla modifica: da verificare.
+File funzionale modificato: src/it/zelda/view/GamePanel.java.
 
-Prossimo passo
+    Aggiunti gli import necessari per HashSet, Set e Timer.
+    Aggiunto l'insieme pressedDirections per memorizzare le direzioni attive.
+    Aggiunto movementTimer, configurato con intervallo di 50 millisecondi.
+    Aggiunto updateMovement() per aggiornare periodicamente la posizione del giocatore.
+    Modificato bindMovementKey(...) per gestire la pressione e il rilascio delle frecce.
+    Mantenuto movePlayer(...) come metodo centrale per aggiornare le coordinate rispettando i confini.
+    Mantenuto il ridisegno del pannello tramite repaint().
 
-Controllare le modifiche con Git, aggiornare il registro e individuare il prossimo obiettivo in base al codice e alle attività ancora da completare.
+Verifiche eseguite
+
+L'utente ha confermato che il movimento continuo funziona correttamente in Eclipse.
+
+Le prove manuali hanno riguardato la pressione e il rilascio dei tasti, le quattro direzioni, i limiti del pannello e la visualizzazione delle statistiche.
+
+git diff --check non ha segnalato problemi di whitespace.
+
+Non sono documentati test automatici specifici per questa funzionalità.
+Stato del checkpoint
+
+Il movimento continuo è verificato localmente, ma il checkpoint non risulta ancora registrato in un nuovo commit né pubblicato su GitHub.
+
+File indicati come modificati localmente nell'ultimo stato Git riportato:
+
+    src/it/zelda/view/GamePanel.java
+    PROGRESS.md
+
+Branch: main.
+
+Ultimo commit pubblicato noto: 87daa44.
+Punto di ripartenza
+
+    Salvare il presente aggiornamento di PROGRESS.md.
+    Registrare il checkpoint del movimento continuo con un nuovo commit.
+    Pubblicare il commit su GitHub.
+    Esaminare la struttura del progetto prima di iniziare la gestione delle collisioni.
+    Concordare una sola modifica alla volta.
+
+Il movimento continuo non deve essere reimplementato: è già presente e verificato manualmente nel prototipo attuale.
