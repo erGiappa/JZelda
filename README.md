@@ -9,7 +9,8 @@ Java 21
 Eclipse IDE
 Java Swing
 Git e GitHub
-Struttura del progetto
+La struttura delle cartelle e dei file del progetto è la seguente:
+
 JZelda/
 ├── src/
 │   └── it/
