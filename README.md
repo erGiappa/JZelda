@@ -9,21 +9,20 @@ Java 21
 Eclipse IDE
 Java Swing
 Git e GitHub
-La struttura delle cartelle e dei file del progetto è la seguente:
-
+📁 Struttura del progetto
 JZelda/
-├── src/
-│   └── it/
-│       └── zelda/
-│           ├── JZelda.java
-│           ├── model/
-│           │   ├── Player.java
-│           │   └── PlayerTest.java
-│           └── view/
-│               ├── GameFrame.java
-│               └── GamePanel.java
-├── README.md
-└── PROGRESS.md
+|-- src/
+|   `-- it/
+|       `-- zelda/
+|           |-- JZelda.java
+|           |-- model/
+|           |   |-- Player.java
+|           |   `-- PlayerTest.java
+|           `-- view/
+|               |-- GameFrame.java
+|               `-- GamePanel.java
+|-- README.md
+`-- PROGRESS.md
 
 Funzionalità attualmente implementate
 Modello del giocatore
