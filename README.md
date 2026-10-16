@@ -4,25 +4,23 @@ JZelda è un progetto universitario sviluppato in Java, ispirato al gameplay del
 
 Il progetto viene sviluppato progressivamente, partendo dalla struttura di base dell'applicazione e introducendo le meccaniche di gioco nelle fasi successive.
 
-Tecnologie
-Java 21
-Eclipse IDE
-Java Swing
-Git e GitHub
 Struttura del progetto
+
+<pre>
 JZelda/
-src/
-it/
-zelda/
-JZelda.java
-model/
-Player.java
-PlayerTest.java
-view/
-GameFrame.java
-GamePanel.java
-README.md
-PROGRESS.md
+├── src/
+│ └── it/
+│ └── zelda/
+│ ├── JZelda.java
+│ ├── model/
+│ │ ├── Player.java
+│ │ └── PlayerTest.java
+│ └── view/
+│ ├── GameFrame.java
+│ └── GamePanel.java
+├── README.md
+└── PROGRESS.md
+</pre>
 
 Funzionalità attualmente implementate
 Modello del giocatore
