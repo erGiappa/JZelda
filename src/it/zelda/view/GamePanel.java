@@ -5,22 +5,21 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 
 import it.zelda.model.Player;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.swing.Timer;
 
 public class GamePanel extends JPanel {
 
     private final Player player;
+
     // Direzioni attualmente premute.
     private final Set<String> pressedDirections = new HashSet<>();
 
@@ -46,34 +45,34 @@ public class GamePanel extends JPanel {
             String keyStroke,
             String actionKey) {
 
-    String direction = actionKey.substring(4).toUpperCase();
+        String direction = actionKey.substring(4).toUpperCase();
 
-    // Registra la pressione del tasto.
-    getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .put(KeyStroke.getKeyStroke("pressed " + keyStroke), actionKey);
+        // Registra la pressione del tasto.
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("pressed " + keyStroke), actionKey);
 
-    getActionMap().put(actionKey, new AbstractAction() {
+        getActionMap().put(actionKey, new AbstractAction() {
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            pressedDirections.add(direction);
-        }
-    });
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pressedDirections.add(direction);
+            }
+        });
 
-    // Registra il rilascio del tasto.
-    String releaseKey = actionKey + "Released";
+        // Registra il rilascio del tasto.
+        String releaseKey = actionKey + "Released";
 
-    getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .put(KeyStroke.getKeyStroke("released " + keyStroke), releaseKey);
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("released " + keyStroke), releaseKey);
 
-    getActionMap().put(releaseKey, new AbstractAction() {
+        getActionMap().put(releaseKey, new AbstractAction() {
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            pressedDirections.remove(direction);
-        }
-    });
-}
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pressedDirections.remove(direction);
+            }
+        });
+    }
 
     private void updateMovement() {
         if (pressedDirections.contains("UP")) {

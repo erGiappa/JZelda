@@ -174,29 +174,17 @@ Le seguenti funzionalità non devono essere considerate implementate senza avern
     Completamento e verifica dell'architettura MVC.
 
 Il movimento a scatti, i limiti dell'area di gioco e il movimento continuo sono invece implementati e verificati manualmente nel prototipo attuale.
-6. Stato del repository Git
+6. Stato Git
 
-    Branch di lavoro: main.
-    Repository remoto: origin.
-    Ultimo commit pubblicato noto: 87daa44 — feat: constrain player movement to game area.
-    Commit precedente: a56aafd — feat: add keyboard movement to player.
-
-Il commit 87daa44 comprende le modifiche ai limiti del movimento ed è stato pubblicato su GitHub.
-
-Durante il checkpoint del movimento continuo sono state apportate modifiche locali a:
-
-    src/it/zelda/view/GamePanel.java
-    PROGRESS.md
-
-Il movimento continuo è stato verificato manualmente in Eclipse.
-
-L'ultimo stato Git riportato dall'utente indica che entrambi i file sono modificati localmente sul branch main.
-
-È stato eseguito git diff --check senza segnalazioni.
-
-Il nuovo checkpoint del movimento continuo non è ancora registrato in un nuovo commit né risulta pubblicato su GitHub. Il commit e il push dovranno essere effettuati dopo aver salvato e verificato il presente aggiornamento del registro.
-
-Lo stato del repository dovrà essere riconfermato al momento della registrazione del checkpoint.
+Branch locale: main.
+Branch remoto: origin/main.
+Ultimo commit: 650ee9b — feat: add continuous player movement.
+L'ultimo git status ha mostrato main allineato con origin/main
+per quanto riguarda i commit. Sono presenti modifiche locali
+non ancora registrate in un nuovo commit.
+src/it/zelda/view/GamePanel.java presenta una modifica locale relativa al riordino degli import.
+git diff --check è stato eseguito senza segnalazioni.
+git ls-files --others --exclude-standard non ha restituito file non tracciati.
 7. Prossime attività
 
 Il movimento continuo del personaggio è stato implementato e verificato manualmente in Eclipse.
@@ -252,45 +240,29 @@ Commit creato:
 
 L'utente ha successivamente eseguito il push del commit su GitHub.
 10. Ultimo checkpoint funzionale — Movimento continuo
-Modifiche effettuate
 
-File funzionale modificato: src/it/zelda/view/GamePanel.java.
+Modifiche e stato
 
-    Aggiunti gli import necessari per HashSet, Set e Timer.
-    Aggiunto l'insieme pressedDirections per memorizzare le direzioni attive.
-    Aggiunto movementTimer, configurato con intervallo di 50 millisecondi.
-    Aggiunto updateMovement() per aggiornare periodicamente la posizione del giocatore.
-    Modificato bindMovementKey(...) per gestire la pressione e il rilascio delle frecce.
-    Mantenuto movePlayer(...) come metodo centrale per aggiornare le coordinate rispettando i confini.
-    Mantenuto il ridisegno del pannello tramite repaint().
+Il movimento continuo è implementato in GamePanel.java mediante javax.swing.Timer, pressedDirections e updateMovement(). Il movimento riutilizza movePlayer(...), che mantiene il controllo dei bordi dell'area di gioco.
 
-Verifiche eseguite
+Verifiche manuali eseguite in Eclipse
 
-L'utente ha confermato che il movimento continuo funziona correttamente in Eclipse.
+Tutte le verifiche seguenti hanno avuto esito positivo:
 
-Le prove manuali hanno riguardato la pressione e il rilascio dei tasti, le quattro direzioni, i limiti del pannello e la visualizzazione delle statistiche.
+    Avvio dell'applicazione senza errori.
+    Movimento continuo mantenendo premuta una freccia.
+    Arresto del movimento al rilascio del tasto.
+    Funzionamento delle quattro direzioni.
+    Rispetto dei bordi dell'area di gioco.
+    Possibilità di tornare verso l'interno dopo aver raggiunto un bordo.
+    Persistenza della visualizzazione delle statistiche.
 
-git diff --check non ha segnalato problemi di whitespace.
+Non sono documentati test automatici specifici per il movimento continuo o le collisioni.
 
-Non sono documentati test automatici specifici per questa funzionalità.
-Stato del checkpoint
+Modifica locale successiva al commit
 
-Il movimento continuo è verificato localmente, ma il checkpoint non risulta ancora registrato in un nuovo commit né pubblicato su GitHub.
+È stato riordinato il gruppo degli import in src/it/zelda/view/GamePanel.java. Il diff esaminato non mostra modifiche alla logica del movimento. La modifica locale non è ancora registrata in un nuovo commit.
 
-File indicati come modificati localmente nell'ultimo stato Git riportato:
+Prossimo obiettivo
 
-    src/it/zelda/view/GamePanel.java
-    PROGRESS.md
-
-Branch: main.
-
-Ultimo commit pubblicato noto: 87daa44.
-Punto di ripartenza
-
-    Salvare il presente aggiornamento di PROGRESS.md.
-    Registrare il checkpoint del movimento continuo con un nuovo commit.
-    Pubblicare il commit su GitHub.
-    Esaminare la struttura del progetto prima di iniziare la gestione delle collisioni.
-    Concordare una sola modifica alla volta.
-
-Il movimento continuo non deve essere reimplementato: è già presente e verificato manualmente nel prototipo attuale.
+Esaminare il codice locale e introdurre una prima collisione con un ostacolo statico rettangolare, mantenendo il movimento continuo e il controllo dei bordi. Procedere una modifica alla volta e verificare il comportamento in Eclipse prima di considerare completato il checkpoint.
