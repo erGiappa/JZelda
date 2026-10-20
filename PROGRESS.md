@@ -165,26 +165,23 @@ La gestione del movimento e degli input è attualmente concentrata in GamePanel.
 
 Le seguenti funzionalità non devono essere considerate implementate senza averne verificato il codice e il comportamento:
 
-    Collisioni con muri, ostacoli e nemici.
-    Mappa di gioco e gestione delle aree.
-    Nemici e combattimento.
-    Oggetti e interazioni.
-    Gestione completa delle regole di gioco.
-    Test automatizzati e configurazione di un framework di test.
-    Completamento e verifica dell'architettura MVC.
+- Collisioni con ostacoli statici: implementata una prima collisione
+  rettangolare in GamePanel. La collisione è stata verificata
+  manualmente in Eclipse. La gestione di più ostacoli e delle
+  collisioni con muri e nemici resta da implementare.
 
 Il movimento a scatti, i limiti dell'area di gioco e il movimento continuo sono invece implementati e verificati manualmente nel prototipo attuale.
 6. Stato Git
 
 Branch locale: main.
 Branch remoto: origin/main.
-Ultimo commit: 650ee9b — feat: add continuous player movement.
-L'ultimo git status ha mostrato main allineato con origin/main
-per quanto riguarda i commit. Sono presenti modifiche locali
-non ancora registrate in un nuovo commit.
-src/it/zelda/view/GamePanel.java presenta una modifica locale relativa al riordino degli import.
+Ultimo commit registrato prima del checkpoint: 2770adc.
+La modifica alle collisioni in GamePanel.java è locale e non
+ancora registrata in un commit.
 git diff --check è stato eseguito senza segnalazioni.
-git ls-files --others --exclude-standard non ha restituito file non tracciati.
+La compilazione di tutti i file Java con javac è riuscita.
+PlayerTest è stato eseguito e ha prodotto i risultati attesi.
+
 7. Prossime attività
 
 Il movimento continuo del personaggio è stato implementato e verificato manualmente in Eclipse.
@@ -263,6 +260,43 @@ Modifica locale successiva al commit
 
 È stato riordinato il gruppo degli import in src/it/zelda/view/GamePanel.java. Il diff esaminato non mostra modifiche alla logica del movimento. La modifica locale non è ancora registrata in un nuovo commit.
 
-Prossimo obiettivo
+## 11. Checkpoint — Prima collisione con ostacolo statico
 
-Esaminare il codice locale e introdurre una prima collisione con un ostacolo statico rettangolare, mantenendo il movimento continuo e il controllo dei bordi. Procedere una modifica alla volta e verificare il comportamento in Eclipse prima di considerare completato il checkpoint.
+### Modifiche effettuate
+
+File modificato: src/it/zelda/view/GamePanel.java.
+
+- Aggiunto un ostacolo rettangolare statico di 80 × 80 pixel,
+  posizionato alle coordinate (300, 200).
+- Aggiunto il controllo delle collisioni tramite
+  java.awt.Rectangle e intersects(...).
+- Modificato movePlayer(...) per impedire l'attraversamento
+  dell'ostacolo e consentire il contatto con il bordo.
+- Aggiunto il disegno dell'ostacolo grigio in paintComponent(...).
+
+### Verifiche eseguite
+
+- L'utente ha confermato manualmente in Eclipse che l'ostacolo
+  è visibile e non può essere attraversato.
+- L'utente ha confermato che la correzione permette al personaggio
+  di raggiungere il bordo dell'ostacolo.
+- git diff --check è terminato senza segnalazioni.
+- La compilazione con javac di tutti i file Java è terminata
+  senza errori.
+- PlayerTest è stato eseguito e ha prodotto i valori attesi.
+
+Le verifiche delle collisioni sono manuali.
+Non sono ancora presenti test automatici specifici per le collisioni.
+
+### Stato Git
+
+La modifica a GamePanel.java è locale e deve essere verificata
+prima di creare il commit.
+Il commit precedente è 2770adc.
+Nessun nuovo commit è stato ancora creato.
+
+### Prossimo obiettivo
+
+Valutare come rappresentare più ostacoli statici senza duplicare
+la logica di collisione, mantenendo il movimento continuo e
+il controllo dei confini già implementati.
