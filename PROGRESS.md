@@ -260,43 +260,36 @@ Modifica locale successiva al commit
 
 È stato riordinato il gruppo degli import in src/it/zelda/view/GamePanel.java. Il diff esaminato non mostra modifiche alla logica del movimento. La modifica locale non è ancora registrata in un nuovo commit.
 
-## 11. Checkpoint — Prima collisione con ostacolo statico
-
-### Modifiche effettuate
+## 11. Checkpoint — Gestione di più ostacoli statici
+Modifiche effettuate
 
 File modificato: src/it/zelda/view/GamePanel.java.
 
-- Aggiunto un ostacolo rettangolare statico di 80 × 80 pixel,
-  posizionato alle coordinate (300, 200).
-- Aggiunto il controllo delle collisioni tramite
-  java.awt.Rectangle e intersects(...).
-- Modificato movePlayer(...) per impedire l'attraversamento
-  dell'ostacolo e consentire il contatto con il bordo.
-- Aggiunto il disegno dell'ostacolo grigio in paintComponent(...).
+Sostituito il singolo ostacolo con una lista List<Rectangle>, inizialmente contenente un ostacolo statico di 80 × 80 pixel in posizione (300, 200).
+Introdotto il metodo collidesWithObstacle(Rectangle bounds), che verifica le collisioni con tutti gli ostacoli della lista.
+Modificato movePlayer(...) per eseguire il movimento incrementale di un pixel alla volta, controllando separatamente gli assi orizzontale e verticale.
+Corretto il problema dello spazio indesiderato di un pixel tra il personaggio e il bordo dell'ostacolo.
+Modificato paintComponent(...) per disegnare tutti gli ostacoli presenti nella lista.
+Aggiunto temporaneamente un secondo ostacolo di 80 × 80 pixel in posizione (450, 200) per verificare la gestione multipla.
+Verifiche manuali eseguite
 
-### Verifiche eseguite
+L'utente ha confermato che:
 
-- L'utente ha confermato manualmente in Eclipse che l'ostacolo
-  è visibile e non può essere attraversato.
-- L'utente ha confermato che la correzione permette al personaggio
-  di raggiungere il bordo dell'ostacolo.
-- git diff --check è terminato senza segnalazioni.
-- La compilazione con javac di tutti i file Java è terminata
-  senza errori.
-- PlayerTest è stato eseguito e ha prodotto i valori attesi.
+Il personaggio raggiunge il bordo degli ostacoli senza lasciare lo spazio indesiderato di un pixel.
+Il personaggio non attraversa gli ostacoli.
+Entrambi gli ostacoli sono visibili.
+Il comportamento delle collisioni funziona con due ostacoli.
 
-Le verifiche delle collisioni sono manuali.
-Non sono ancora presenti test automatici specifici per le collisioni.
+La conferma riguarda le prove manuali effettuate in Eclipse. Non sono ancora documentati test automatici specifici per le collisioni.
 
-### Stato Git
+Da verificare nuovamente dopo le ultime modifiche: movimento continuo, scorrimento lungo i bordi, limiti del pannello e compilazione completa del progetto.
 
-La modifica a GamePanel.java è locale e deve essere verificata
-prima di creare il commit.
-Il commit precedente è 2770adc.
-Nessun nuovo commit è stato ancora creato.
+Stato Git
 
-### Prossimo obiettivo
+Ultimo commit noto prima di queste modifiche: b6325b9 — feat: add static obstacle collision.
 
-Valutare come rappresentare più ostacoli statici senza duplicare
-la logica di collisione, mantenendo il movimento continuo e
-il controllo dei confini già implementati.
+Il codice è stato modificato dopo questo commit. Lo stato effettivo del working tree e l'eventuale presenza di altri cambiamenti devono essere verificati prima di creare un nuovo commit.
+
+Prossimo obiettivo
+
+Completare le verifiche tecniche della gestione di più ostacoli, controllare le modifiche con Git e registrare un checkpoint coerente con i risultati verificati.

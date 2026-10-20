@@ -4,8 +4,10 @@ package it.zelda.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -15,19 +17,30 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 import it.zelda.model.Player;
-import java.awt.Rectangle;
 
 public class GamePanel extends JPanel {
 
     private final Player player;
-    private final Rectangle obstacle =
-            new Rectangle(300, 200, 80, 80);
+    private final List<Rectangle> obstacles = List.of(
+            new Rectangle(300, 200, 80, 80),
+            new Rectangle(450, 200, 80, 80)
+    );
 
     // Direzioni attualmente premute.
     private final Set<String> pressedDirections = new HashSet<>();
 
     // Timer che aggiorna il movimento ogni 50 millisecondi.
     private final Timer movementTimer;
+
+    private boolean collidesWithObstacle(Rectangle bounds) {
+        for (Rectangle obstacle : obstacles) {
+            if (bounds.intersects(obstacle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public GamePanel(Player player) {
         this.player = player;
@@ -101,83 +114,61 @@ public class GamePanel extends JPanel {
 
 
 
+
 private void movePlayer(int deltaX, int deltaY) {
     int playerSize = 32;
 
     int maxX = Math.max(0, getWidth() - playerSize);
     int maxY = Math.max(0, getHeight() - playerSize);
 
-    int nextX = Math.max(0,
-            Math.min(player.getX() + deltaX, maxX));
+    int currentX = player.getX();
+    int currentY = player.getY();
 
-    int nextY = Math.max(0,
-            Math.min(player.getY() + deltaY, maxY));
+    // Movimento orizzontale, un pixel alla volta.
+    int stepX = Integer.compare(deltaX, 0);
 
-    // Rettangolo della posizione candidata.
-    Rectangle nextPlayerBounds =
-            new Rectangle(nextX, nextY, playerSize, playerSize);
+    for (int i = 0; i < Math.abs(deltaX); i++) {
+        int nextX = Math.max(0,
+                Math.min(currentX + stepX, maxX));
 
-    // Se c'è una collisione, prova a scorrere lungo l'asse libero.
-    if (nextPlayerBounds.intersects(obstacle)) {
-
-        // Movimento orizzontale: mantieni la coordinata Y.
-        if (deltaX != 0) {
-            nextX = Math.max(0,
-                    Math.min(player.getX() + deltaX, maxX));
-
-            Rectangle horizontalBounds =
-                    new Rectangle(nextX, player.getY(),
-                            playerSize, playerSize);
-
-            if (horizontalBounds.intersects(obstacle)) {
-                nextX = player.getX();
-
-                // Avanza fino al bordo dell'ostacolo, se possibile.
-                if (deltaX > 0) {
-                    nextX = obstacle.x - playerSize;
-                } else {
-                    nextX = obstacle.x + obstacle.width;
-                }
-            }
-
-            nextX = Math.max(0, Math.min(nextX, maxX));
+        if (nextX == currentX) {
+            break;
         }
 
-        // Movimento verticale: mantieni la coordinata X.
-        if (deltaY != 0) {
-            nextY = Math.max(0,
-                    Math.min(player.getY() + deltaY, maxY));
+        Rectangle nextBounds =
+                new Rectangle(nextX, currentY, playerSize, playerSize);
 
-            Rectangle verticalBounds =
-                    new Rectangle(player.getX(), nextY,
-                            playerSize, playerSize);
-
-            if (verticalBounds.intersects(obstacle)) {
-                nextY = player.getY();
-
-                // Avanza fino al bordo dell'ostacolo, se possibile.
-                if (deltaY > 0) {
-                    nextY = obstacle.y - playerSize;
-                } else {
-                    nextY = obstacle.y + obstacle.height;
-                }
-            }
-
-            nextY = Math.max(0, Math.min(nextY, maxY));
+        if (collidesWithObstacle(nextBounds)) {
+            break;
         }
+
+        currentX = nextX;
     }
 
-    // Verifica finale: non applicare mai una posizione in collisione.
-    Rectangle finalBounds =
-            new Rectangle(nextX, nextY, playerSize, playerSize);
+    // Movimento verticale, un pixel alla volta.
+    int stepY = Integer.compare(deltaY, 0);
 
-    if (finalBounds.intersects(obstacle)) {
-        return;
+    for (int i = 0; i < Math.abs(deltaY); i++) {
+        int nextY = Math.max(0,
+                Math.min(currentY + stepY, maxY));
+
+        if (nextY == currentY) {
+            break;
+        }
+
+        Rectangle nextBounds =
+                new Rectangle(currentX, nextY, playerSize, playerSize);
+
+        if (collidesWithObstacle(nextBounds)) {
+            break;
+        }
+
+        currentY = nextY;
     }
 
     player.move(
-            nextX - player.getX(),
-            nextY - player.getY());
+            currentX - player.getX(),
+            currentY - player.getY());
 }
 
 
@@ -188,12 +179,15 @@ protected void paintComponent(Graphics g) {
 
     // Disegna l'ostacolo statico.
     g.setColor(Color.GRAY);
-    g.fillRect(
-            obstacle.x,
-            obstacle.y,
-            obstacle.width,
-            obstacle.height);
 
+    for (Rectangle obstacle : obstacles) {
+        g.fillRect(
+                obstacle.x,
+                obstacle.y,
+                obstacle.width,
+                obstacle.height
+        );
+    }
     // Disegna il personaggio.
     g.setColor(Color.GREEN);
     g.fillRect(player.getX(), player.getY(), 32, 32);
