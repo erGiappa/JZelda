@@ -284,12 +284,75 @@ La conferma riguarda le prove manuali effettuate in Eclipse. Non sono ancora doc
 
 Da verificare nuovamente dopo le ultime modifiche: movimento continuo, scorrimento lungo i bordi, limiti del pannello e compilazione completa del progetto.
 
+12. Checkpoint — Verifica della gestione di più ostacoli statici
+Verifiche eseguite
+
+Compilazione completa
+
+Eseguito dalla cartella principale del progetto:
+
+mkdir -p /tmp/jzelda-classes
+javac -d /tmp/jzelda-classes $(find src -name "*.java")
+
+
+La compilazione è terminata senza errori. I file .class sono stati generati nella cartella temporanea /tmp/jzelda-classes, esterna al repository.
+
+Verifiche funzionali manuali in Eclipse
+
+L'utente ha confermato che tutte le prove sono state superate:
+
+Collisione frontale con il primo ostacolo.
+Collisione frontale con il secondo ostacolo.
+Arresto del personaggio senza attraversare gli ostacoli e senza lasciare lo spazio indesiderato di un pixel.
+Scorrimento lungo il bordo degli ostacoli.
+Funzionamento del movimento continuo e arresto al rilascio dei tasti.
+Rispetto dei limiti dell'area di gioco.
+Stato delle funzionalità
+
+La gestione di più ostacoli statici è implementata e verificata mediante prove manuali in Eclipse.
+
+La compilazione di tutti i sorgenti Java è riuscita.
+
+Non sono ancora documentati test automatici specifici per il movimento, i limiti del pannello o le collisioni.
+
+13. Checkpoint — Prima separazione della mappa statica
+Modifiche effettuate
+
+Creato il file src/it/zelda/model/GameMap.java.
+
+La classe contiene una lista iniziale di due ostacoli rettangolari:
+
+Ostacolo in posizione (300, 200), dimensioni 80 × 80 pixel.
+Ostacolo in posizione (450, 200), dimensioni 80 × 80 pixel.
+
+La lista viene inizializzata nel costruttore tramite List.of(...) ed è esposta attraverso getObstacles().
+
+Modificato src/it/zelda/view/GamePanel.java:
+
+Aggiunto il campo gameMap di tipo GameMap.
+Inizializzata la mappa nel costruttore di GamePanel.
+Modificato collidesWithObstacle(...) per utilizzare gameMap.getObstacles().
+Modificato paintComponent(...) per disegnare gli ostacoli forniti dalla mappa.
+Rimossa la definizione diretta degli ostacoli da GamePanel.
+
+La logica del movimento, del timer, degli input e dei limiti non è stata intenzionalmente modificata.
+
+Verifiche eseguite
+
+L'utente ha confermato che JZelda si avvia e funziona dopo la modifica.
+
+Non sono ancora documentate nuove prove specifiche per ogni collisione dopo l'introduzione di GameMap, né una nuova compilazione completa da terminale successiva a questa modifica.
+
+Problemi incontrati
+
+Nessun problema segnalato durante la modifica o l'avvio dell'applicazione.
+
 Stato Git
 
-Ultimo commit noto prima di queste modifiche: b6325b9 — feat: add static obstacle collision.
+Sono stati modificati src/it/zelda/model/GameMap.java, aggiunto come nuovo file, e src/it/zelda/view/GamePanel.java.
 
-Il codice è stato modificato dopo questo commit. Lo stato effettivo del working tree e l'eventuale presenza di altri cambiamenti devono essere verificati prima di creare un nuovo commit.
+È necessario controllare lo stato effettivo del repository prima di creare un commit.
 
-Prossimo obiettivo
+Prossima attività
 
-Completare le verifiche tecniche della gestione di più ostacoli, controllare le modifiche con Git e registrare un checkpoint coerente con i risultati verificati.
+Verificare le collisioni e il movimento continuo dopo l'introduzione di GameMap, quindi valutare come rendere più robusta la rappresentazione degli ostacoli senza introdurre complessità non necessarie.

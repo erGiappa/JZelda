@@ -1,4 +1,3 @@
-
 package it.zelda.view;
 
 import java.awt.Color;
@@ -7,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -16,15 +14,13 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
+import it.zelda.model.GameMap;
 import it.zelda.model.Player;
 
 public class GamePanel extends JPanel {
 
     private final Player player;
-    private final List<Rectangle> obstacles = List.of(
-            new Rectangle(300, 200, 80, 80),
-            new Rectangle(450, 200, 80, 80)
-    );
+    private final GameMap gameMap;
 
     // Direzioni attualmente premute.
     private final Set<String> pressedDirections = new HashSet<>();
@@ -33,7 +29,7 @@ public class GamePanel extends JPanel {
     private final Timer movementTimer;
 
     private boolean collidesWithObstacle(Rectangle bounds) {
-        for (Rectangle obstacle : obstacles) {
+        for (Rectangle obstacle : gameMap.getObstacles()) {
             if (bounds.intersects(obstacle)) {
                 return true;
             }
@@ -44,6 +40,8 @@ public class GamePanel extends JPanel {
 
     public GamePanel(Player player) {
         this.player = player;
+        this.gameMap = new GameMap();
+
         setBackground(Color.BLACK);
 
         // Timer che aggiorna il movimento ogni 50 millisecondi.
@@ -55,7 +53,7 @@ public class GamePanel extends JPanel {
         bindMovementKey("DOWN", "moveDown");
         bindMovementKey("LEFT", "moveLeft");
         bindMovementKey("RIGHT", "moveRight");
-        }
+    }
 
     private void bindMovementKey(
             String keyStroke,
@@ -112,92 +110,88 @@ public class GamePanel extends JPanel {
         }
     }
 
+    private void movePlayer(int deltaX, int deltaY) {
+        int playerSize = 32;
 
+        int maxX = Math.max(0, getWidth() - playerSize);
+        int maxY = Math.max(0, getHeight() - playerSize);
 
+        int currentX = player.getX();
+        int currentY = player.getY();
 
-private void movePlayer(int deltaX, int deltaY) {
-    int playerSize = 32;
+        // Movimento orizzontale, un pixel alla volta.
+        int stepX = Integer.compare(deltaX, 0);
 
-    int maxX = Math.max(0, getWidth() - playerSize);
-    int maxY = Math.max(0, getHeight() - playerSize);
+        for (int i = 0; i < Math.abs(deltaX); i++) {
+            int nextX = Math.max(0,
+                    Math.min(currentX + stepX, maxX));
 
-    int currentX = player.getX();
-    int currentY = player.getY();
+            if (nextX == currentX) {
+                break;
+            }
 
-    // Movimento orizzontale, un pixel alla volta.
-    int stepX = Integer.compare(deltaX, 0);
+            Rectangle nextBounds =
+                    new Rectangle(nextX, currentY, playerSize, playerSize);
 
-    for (int i = 0; i < Math.abs(deltaX); i++) {
-        int nextX = Math.max(0,
-                Math.min(currentX + stepX, maxX));
+            if (collidesWithObstacle(nextBounds)) {
+                break;
+            }
 
-        if (nextX == currentX) {
-            break;
+            currentX = nextX;
         }
 
-        Rectangle nextBounds =
-                new Rectangle(nextX, currentY, playerSize, playerSize);
+        // Movimento verticale, un pixel alla volta.
+        int stepY = Integer.compare(deltaY, 0);
 
-        if (collidesWithObstacle(nextBounds)) {
-            break;
+        for (int i = 0; i < Math.abs(deltaY); i++) {
+            int nextY = Math.max(0,
+                    Math.min(currentY + stepY, maxY));
+
+            if (nextY == currentY) {
+                break;
+            }
+
+            Rectangle nextBounds =
+                    new Rectangle(currentX, nextY, playerSize, playerSize);
+
+            if (collidesWithObstacle(nextBounds)) {
+                break;
+            }
+
+            currentY = nextY;
         }
 
-        currentX = nextX;
+        player.move(
+                currentX - player.getX(),
+                currentY - player.getY());
     }
 
-    // Movimento verticale, un pixel alla volta.
-    int stepY = Integer.compare(deltaY, 0);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-    for (int i = 0; i < Math.abs(deltaY); i++) {
-        int nextY = Math.max(0,
-                Math.min(currentY + stepY, maxY));
+        // Disegna tutti gli ostacoli definiti nella mappa.
+        g.setColor(Color.GRAY);
 
-        if (nextY == currentY) {
-            break;
+        for (Rectangle obstacle : gameMap.getObstacles()) {
+            g.fillRect(
+                    obstacle.x,
+                    obstacle.y,
+                    obstacle.width,
+                    obstacle.height
+            );
         }
 
-        Rectangle nextBounds =
-                new Rectangle(currentX, nextY, playerSize, playerSize);
+        // Disegna il personaggio.
+        g.setColor(Color.GREEN);
+        g.fillRect(player.getX(), player.getY(), 32, 32);
 
-        if (collidesWithObstacle(nextBounds)) {
-            break;
-        }
+        // Disegna le informazioni della partita.
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("SansSerif", Font.BOLD, 16));
 
-        currentY = nextY;
+        g.drawString("Vite: " + player.getLives(), 20, 25);
+        g.drawString("Rupie: " + player.getRupees(), 20, 45);
+        g.drawString("Punteggio: " + player.getScore(), 20, 65);
     }
-
-    player.move(
-            currentX - player.getX(),
-            currentY - player.getY());
-}
-
-
-
-@Override
-protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
-
-    // Disegna l'ostacolo statico.
-    g.setColor(Color.GRAY);
-
-    for (Rectangle obstacle : obstacles) {
-        g.fillRect(
-                obstacle.x,
-                obstacle.y,
-                obstacle.width,
-                obstacle.height
-        );
-    }
-    // Disegna il personaggio.
-    g.setColor(Color.GREEN);
-    g.fillRect(player.getX(), player.getY(), 32, 32);
-
-    // Disegna le informazioni della partita.
-    g.setColor(Color.WHITE);
-    g.setFont(new Font("SansSerif", Font.BOLD, 16));
-
-    g.drawString("Vite: " + player.getLives(), 20, 25);
-    g.drawString("Rupie: " + player.getRupees(), 20, 45);
-    g.drawString("Punteggio: " + player.getScore(), 20, 65);
-}
 }
