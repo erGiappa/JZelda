@@ -347,12 +347,68 @@ Problemi incontrati
 
 Nessun problema segnalato durante la modifica o l'avvio dell'applicazione.
 
-Stato Git
+14. Checkpoint — Verifica funzionale dopo la separazione di GameMap
+Obiettivo
 
-Sono stati modificati src/it/zelda/model/GameMap.java, aggiunto come nuovo file, e src/it/zelda/view/GamePanel.java.
+Verificare che la gestione degli ostacoli statici, il movimento continuo e i limiti dell'area di gioco funzionino dopo la separazione della mappa dalla classe GamePanel.
 
-È necessario controllare lo stato effettivo del repository prima di creare un commit.
+Verifiche eseguite
+
+Compilazione
+
+Eseguito dalla cartella principale del progetto:
+
+mkdir -p /tmp/jzelda-classes
+javac -d /tmp/jzelda-classes $(find src -name "*.java")
+
+
+La compilazione è terminata senza messaggi di errore. I file .class sono stati generati nella cartella temporanea /tmp/jzelda-classes, esterna al repository.
+
+Collisioni e movimento attorno agli ostacoli
+
+L'utente ha confermato l'esito positivo delle seguenti prove manuali in Eclipse:
+
+Collisione frontale con il primo ostacolo.
+Scorrimento laterale lungo il primo ostacolo.
+Movimento attorno all'angolo del primo ostacolo.
+Collisione frontale con il secondo ostacolo.
+Scorrimento laterale lungo il secondo ostacolo.
+
+Movimento continuo
+
+L'utente ha confermato che:
+
+Il movimento continua regolarmente mentre una freccia rimane premuta.
+Il personaggio si arresta correttamente al rilascio del tasto.
+Il cambio di direzione funziona correttamente.
+
+Limiti dell'area di gioco
+
+L'utente ha confermato che il personaggio rispetta tutti e quattro i limiti:
+
+Sinistro.
+Destro.
+Superiore.
+Inferiore.
+Problemi incontrati
+
+Nessun problema funzionale è stato segnalato durante le prove manuali di questo checkpoint.
+
+Limiti delle verifiche
+
+Le verifiche funzionali sono manuali e sono state confermate dall'utente in Eclipse. Non sono ancora documentati test automatici specifici per collisioni, movimento continuo e limiti dell'area di gioco.
+
+### Stato Git prima dell'aggiornamento del registro
+
+- Branch locale: `main`.
+- Branch remoto di riferimento: `origin/main`.
+Commit locale e remoto verificato: 2f720fff04a97fdf77e0d89dc775b9fe5c033bca.
+Working tree pulito prima della modifica a questo documento.
+git diff --check non ha segnalato problemi.
+La compilazione Java è riuscita.
+
+Lo stato Git dovrà essere verificato nuovamente dopo l'aggiornamento di questo documento.
 
 Prossima attività
 
-Verificare le collisioni e il movimento continuo dopo l'introduzione di GameMap, quindi valutare come rendere più robusta la rappresentazione degli ostacoli senza introdurre complessità non necessarie.
+Valutare il prossimo obiettivo di sviluppo esaminando la struttura attuale del progetto e le funzionalità già presenti. Prima di implementare nuove funzionalità, verificare se esistono già componenti riutilizzabili e concordare una sola modifica alla volta.
