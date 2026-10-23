@@ -398,17 +398,43 @@ Limiti delle verifiche
 
 Le verifiche funzionali sono manuali e sono state confermate dall'utente in Eclipse. Non sono ancora documentati test automatici specifici per collisioni, movimento continuo e limiti dell'area di gioco.
 
-### Stato Git prima dell'aggiornamento del registro
+15. Checkpoint — Introduzione del record immutabile Obstacle
+Obiettivo
 
-- Branch locale: `main`.
-- Branch remoto di riferimento: `origin/main`.
-Commit locale e remoto verificato: 2f720fff04a97fdf77e0d89dc775b9fe5c033bca.
-Working tree pulito prima della modifica a questo documento.
-git diff --check non ha segnalato problemi.
-La compilazione Java è riuscita.
+Separare la rappresentazione geometrica degli ostacoli dalla classe grafica Rectangle, rendendo immutabili i dati che descrivono ciascun ostacolo.
 
-Lo stato Git dovrà essere verificato nuovamente dopo l'aggiornamento di questo documento.
+Modifiche effettuate
+Creato src/it/zelda/model/Obstacle.java, dichiarato come record con i componenti x, y, width e height, tutti di tipo int.
+Modificato src/it/zelda/model/GameMap.java per utilizzare List<Obstacle> al posto di List<Rectangle>.
+Mantenuti invariati posizione e dimensioni dei due ostacoli: (300, 200, 80, 80) e (450, 200, 80, 80).
+Modificato src/it/zelda/view/GamePanel.java per utilizzare i dati di Obstacle durante il controllo delle collisioni e il disegno.
+La logica del movimento, il timer, gli input e i limiti del pannello non sono stati intenzionalmente modificati.
+Verifiche tecniche
+git diff --check: superato, nessun problema segnalato.
+Compilazione completa dei sorgenti sotto src tramite javac: superata senza errori.
+Verifiche funzionali manuali
+
+L'utente ha confermato l'esito positivo di tutte e cinque le prove eseguite in Eclipse:
+
+Disegno dei due ostacoli nelle posizioni e dimensioni previste.
+Collisione frontale con un ostacolo.
+Scorrimento laterale e aggiramento degli angoli.
+Collisione frontale e scorrimento laterale sul secondo ostacolo.
+Rispetto dei limiti sinistro, destro, superiore e inferiore del pannello.
+Problemi incontrati
+
+Durante l'adattamento di GamePanel.java sono stati rilevati errori di compilazione dovuti all'uso residuo di Rectangle nei cicli sugli ostacoli. Gli errori sono stati risolti adattando i cicli al nuovo tipo Obstacle.
+
+È stato inoltre corretto un problema di formattazione dell'indentazione, dopo il quale git diff --check è terminato senza segnalazioni.
+
+Limiti delle verifiche
+
+Le verifiche funzionali sono manuali. Non sono ancora stati introdotti test automatici dedicati a collisioni, disegno e movimento.
+
+Stato Git
+
+Da verificare dopo l'aggiornamento del registro e prima del commit.
 
 Prossima attività
 
-Valutare il prossimo obiettivo di sviluppo esaminando la struttura attuale del progetto e le funzionalità già presenti. Prima di implementare nuove funzionalità, verificare se esistono già componenti riutilizzabili e concordare una sola modifica alla volta.
+Valutare il prossimo miglioramento architetturale dopo aver verificato lo stato del repository e aver registrato questo checkpoint con un commit dedicato.

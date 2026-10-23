@@ -1,21 +1,20 @@
 
 package it.zelda.model;
 
-import java.awt.Rectangle;
 import java.util.List;
 
 public class GameMap {
 
-    private final List<Rectangle> obstacles;
+    private final List<Obstacle> obstacles;
 
     public GameMap() {
         obstacles = List.of(
-            new Rectangle(300, 200, 80, 80),
-            new Rectangle(450, 200, 80, 80)
+            new Obstacle(300, 200, 80, 80),
+            new Obstacle(450, 200, 80, 80)
         );
     }
 
-    public List<Rectangle> getObstacles() {
+    public List<Obstacle> getObstacles() {
         return obstacles;
     }
 }

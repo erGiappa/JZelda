@@ -15,6 +15,7 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 import it.zelda.model.GameMap;
+import it.zelda.model.Obstacle;
 import it.zelda.model.Player;
 
 public class GamePanel extends JPanel {
@@ -29,11 +30,13 @@ public class GamePanel extends JPanel {
     private final Timer movementTimer;
 
     private boolean collidesWithObstacle(Rectangle bounds) {
-        for (Rectangle obstacle : gameMap.getObstacles()) {
-            if (bounds.intersects(obstacle)) {
-                return true;
-            }
-        }
+		for (Obstacle obstacle : gameMap.getObstacles()) {
+			Rectangle obstacleBounds = new Rectangle(obstacle.x(), obstacle.y(), obstacle.width(), obstacle.height());
+
+			if (bounds.intersects(obstacleBounds)) {
+				return true;
+			}
+		}
 
         return false;
     }
@@ -173,12 +176,12 @@ public class GamePanel extends JPanel {
         // Disegna tutti gli ostacoli definiti nella mappa.
         g.setColor(Color.GRAY);
 
-        for (Rectangle obstacle : gameMap.getObstacles()) {
+        for (Obstacle obstacle : gameMap.getObstacles()) {
             g.fillRect(
-                    obstacle.x,
-                    obstacle.y,
-                    obstacle.width,
-                    obstacle.height
+                obstacle.x(),
+                obstacle.y(),
+                obstacle.width(),
+                obstacle.height()
             );
         }
 
